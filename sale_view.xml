@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_template_tree" model="ir.ui.view">
+            <field name="name">sale.order.tree</field>
+            <field name="model">sale.order</field>
+            <field name="priority">6</field>
+            <field name="arch" type="xml">
+                <tree string="Templates" fonts="bold:message_unread==True">
+                    <field name="message_unread" invisible="1"/>
+                    <field name="name" string="Template Number"/>
+                    <field name="date_order"/>
+                    <field name="partner_id"/>
+                    <field name="user_id"/>
+                    <field name="amount_total" sum="Total Tax Included"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_templates" model="ir.actions.act_window">
+            <field name="name">Templates</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="view_template_tree"/>
+            <field name="view_mode">tree,form,calendar,graph</field>
+            <field name="context">{}</field>
+            <field name="domain">[('state','=','template')]</field>
+            <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a template, the first step of a new sale.
+              </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_sale_template"
+            action="action_templates" parent="base.menu_sales"
+            sequence="2"/>
+
+        <record id="view_order_form" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//button[@name='action_quotation_send']" position="before">
+                        <button name="action_template" states="draft" string="Make Template" class="oe_highlight" groups="base.group_user"/>
+                    </xpath>
+                </data>
+
+<!--                <button name="invoice_cancel" position="after">
+                    <button name="action_template" states="draft" string="Make Template" class="oe_highlight" groups="base.group_user"/>
+                </button> -->
+            </field>
+        </record>
+
+    </data>
+</openerp>
